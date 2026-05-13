@@ -5,5 +5,5 @@
 !.gitignore
 
 # Whitelist your two exclusive scripts
-!Progenitor.ps1
-!Vermine.ps1
+!Progenitor.psm1
+!Vermine.psm1

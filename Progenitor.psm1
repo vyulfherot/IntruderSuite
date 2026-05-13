@@ -202,3 +202,6 @@ if ($shc) {
 } else {
     injectdll -dllPath $dllPath
 }
+
+# Module
+Export-ModuleMember -Function injectshc, injectdll, injectpe

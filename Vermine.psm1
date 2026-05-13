@@ -293,3 +293,6 @@ if (!$standalone) {
 
 # Report
 conwrite -do (-not $isSilent) -name $scriptName -msg "Finished" -msgColor Cyan
+
+# Module
+Export-ModuleMember -Function genshc, injectshc
