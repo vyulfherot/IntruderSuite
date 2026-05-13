@@ -1,0 +1,1 @@
+Get-ChildItem -Path $PSScriptRoot -Recurse -Filter "*.ps*" | ? { $_.FullName -ne $PSCommandPath } | % { Import-Module $_.FullName -DisableNameChecking }
