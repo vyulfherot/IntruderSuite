@@ -1,0 +1,9 @@
+# Ignore everything in the directory
+*
+
+# Do not ignore the .gitignore file itself (highly recommended)
+!.gitignore
+
+# Whitelist your two exclusive scripts
+!Progenitor.ps1
+!Vermine.ps1
