@@ -1,4 +1,4 @@
-class Win32Api {
+class Win32Builder {
     # Setup | Instance
     hidden [string]$InstanceId
     hidden [System.Reflection.Emit.TypeBuilder]$Builder
@@ -6,7 +6,7 @@ class Win32Api {
     hidden [String]$Conname
 
     # Methods | Contructors
-    Win32Api() {
+    Win32Builder() {
         $this.InstanceId = [guid]::NewGuid().Guid
         $this.Init()
     }
@@ -38,13 +38,17 @@ class Win32Api {
         $mb.SetCustomAttribute($cab)
     }
 
-    [System.Reflection.Emit.TypeBuilder]CreateApi() {
+    [System.Type]CreateApi() {
         try {
             $this.Api = $this.Builder.CreateType()
         } catch {
             Conwrite -name $this.Conname -msg "Error initializing type:" -data "$($_)" -msgColor Red
         }
 
+        return $this.Api
+    }
+
+    [System.Type]GetApi() {
         return $this.Api
     }
 

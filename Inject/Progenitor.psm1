@@ -1,4 +1,4 @@
-using module "..\_Win32\Win32Api.psm1"
+using module "..\_Win32\Win32Builder.psm1"
 
 class Progenitor {
     # Setup | Win32 - Api
@@ -25,7 +25,7 @@ class Progenitor {
         if ($null -ne $cls::K32Proc) {return}
 
         # Assign
-        $api = [Win32Api]::New()
+        $api = [Win32Builder]::New()
 
         # Map
         $api::MapApi("kernel32.dll", "OpenProcess", ([intptr]), @([uint32], [bool], [uint32]))
@@ -40,7 +40,7 @@ class Progenitor {
         if ($null -ne $cls::K32Mem) {return}
 
         # Assign
-        $api = [Win32Api]::New()
+        $api = [Win32Builder]::New()
 
         # Map
         $api::MapApi("kernel32.dll", "VirtualAllocEx", ([intptr]), @([intptr], [intptr], [uintptr], [uint32], [uint32]))
@@ -57,7 +57,7 @@ class Progenitor {
         if ($null -ne $cls::W32DLL) {return}
 
         # Assign
-        $api = [Win32Api]::New()
+        $api = [Win32Builder]::New()
 
         # Map
         $api::MapApi("kernel32.dll", "GetModuleHandle", ([intptr]), @([string]))
@@ -75,7 +75,7 @@ class Progenitor {
         #if ($null -ne $cls::W32PE) {return}
 
         # Assign
-        #$api = [Win32Api]::New()
+        #$api = [Win32Builder]::New()
 
         # Map
 
