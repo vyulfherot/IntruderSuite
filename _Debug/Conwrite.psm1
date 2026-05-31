@@ -27,3 +27,5 @@ function Conwrite {
         Write-Host "}" -fore $dataColor    
     }
 }
+
+Export-ModuleMember -Function *

@@ -6,3 +6,5 @@ function Pretty-Bytes {
 
     return "0x$(($bytes | ForEach-Object { '{0:X2}' -f $_ }) -join ', 0x')"
 }
+
+Export-ModuleMember -Function *

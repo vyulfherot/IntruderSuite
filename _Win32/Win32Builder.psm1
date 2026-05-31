@@ -6,36 +6,53 @@ class Win32Builder {
     hidden [String]$Conname
 
     # Methods | Contructors
-    Win32Builder() {
+    Win32Builder([System.Reflection.Emit.AssemblyBuilderAccess]$builderAccess) {
         $this.InstanceId = [guid]::NewGuid().Guid
-        $this.Init()
+
+        if ($null -ne $builderAccess) {
+            $this.Init($builderAccess)
+        } else {
+            $this.Init([System.Reflection.Emit.AssemblyBuilderAccess]::RunAndCollect)
+        }
     }
 
-    hidden [void]Init() {
-        $modBuilder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('Proxy')), [System.Reflection.Emit.AssemblyBuilderAccess]::RunAndCollect).DefineDynamicModule('ProxyMod')
+    hidden [void]Init([System.Reflection.Emit.AssemblyBuilderAccess]$builderAccess) {
+        $modBuilder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('Proxy')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('ProxyMod')
         $this.Builder = $modBuilder.DefineType("W32Api_$($this.InstanceId)", "Public,Class")
     }
 
     # Methods | Api
-    [void]MapApi([string]$dll, [string]$name, [type]$retType, [type[]]$params) {
+    [void]MapApi([string]$dll, [string]$name, [type]$retType, [type[]]$params, [System.Runtime.InteropServices.CharSet]$charSet) {
         $attr = [System.Reflection.MethodAttributes]"Public, Static, PinvokeImpl"
         $netConv = [System.Reflection.CallingConventions]::Standard
         $win32Conv = [System.Runtime.InteropServices.CallingConvention]::Winapi
-        $cset = [System.Runtime.InteropServices.CharSet]::Ansi
-        $mb = $this.Builder.DefinePInvokeMethod($name, $dll, $attr, $netConv, $retType, $params, $win32Conv, $cset)
+        $mb = $this.Builder.DefinePInvokeMethod($name, $dll, $attr, $netConv, $retType, $params, $win32Conv, $charSet)
+
         $mb.SetImplementationFlags(
             $mb.GetMethodImplementationFlags() -bor
             [System.Reflection.MethodImplAttributes]::PreserveSig
         )
-        $dllImportCtor = [System.Runtime.InteropServices.DllImportAttribute].GetConstructor([string])
-        $dllImportProp = [System.Runtime.InteropServices.DllImportAttribute].GetField('SetLastError')
+
+        $dllImportCtor = [System.Runtime.InteropServices.DllImportAttribute].GetConstructor(@([string]))
+        $dllImportFields = @(
+            [System.Runtime.InteropServices.DllImportAttribute].GetField('SetLastError'),
+            [System.Runtime.InteropServices.DllImportAttribute].GetField('CharSet')
+        )
+        $fieldvalues = @(
+            [bool]$true,
+            [System.Runtime.InteropServices.CharSet]$charSet
+        )
         $cab = New-Object System.Reflection.Emit.CustomAttributeBuilder(
             $dllImportCtor,
             @($dll),
-            @($dllImportProp),
-            @($true)
+            $dllImportFields,
+            $fieldvalues
         )
         $mb.SetCustomAttribute($cab)
+    }
+
+    [void]MapApi([string]$dll, [string]$name, [type]$retType, [type[]]$params) {
+        $this.MapApi($dll, $name, $retType, $params, [System.Runtime.InteropServices.CharSet]::Ansi)
     }
 
     [System.Type]CreateApi() {

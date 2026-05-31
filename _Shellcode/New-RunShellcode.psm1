@@ -89,3 +89,5 @@ function New-RunShellcode {
 
     return $finalshc
 }
+
+Export-ModuleMember -Function *
