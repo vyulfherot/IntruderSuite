@@ -28,10 +28,10 @@ class Progenitor {
         $api = [Win32Builder]::New()
 
         # Map
-        $api::MapApi("kernel32.dll", "OpenProcess", ([intptr]), @([uint32], [bool], [uint32]))
+        $api.MapApi("kernel32.dll", "OpenProcess", ([intptr]), @([uint32], [bool], [uint32]))
 
         # Init
-        $cls::K32Proc = $api::CreateApi()
+        $cls::K32Proc = $api.CreateApi()
     }
 
     hidden static [void]InitK32Mem() {
@@ -43,12 +43,12 @@ class Progenitor {
         $api = [Win32Builder]::New()
 
         # Map
-        $api::MapApi("kernel32.dll", "VirtualAllocEx", ([intptr]), @([intptr], [intptr], [uintptr], [uint32], [uint32]))
-        $api::MapApi("kernel32.dll", "WriteProcessMemory", ([bool]), @([intptr], [intptr], [Byte[]], [uintptr], [uintptr]))
-        $api::MapApi("kernel32.dll", "CreateRemoteThread", ([intptr]), @([intptr], [intptr], [uintptr], [intptr], [intptr], [uint32], [intptr]))
+        $api.MapApi("kernel32.dll", "VirtualAllocEx", ([intptr]), @([intptr], [intptr], [uintptr], [uint32], [uint32]))
+        $api.MapApi("kernel32.dll", "WriteProcessMemory", ([bool]), @([intptr], [intptr], [Byte[]], [uintptr], [uintptr]))
+        $api.MapApi("kernel32.dll", "CreateRemoteThread", ([intptr]), @([intptr], [intptr], [uintptr], [intptr], [intptr], [uint32], [intptr]))
 
         # Init
-        $cls::K32Mem = $api::CreateApi()
+        $cls::K32Mem = $api.CreateApi()
     }
 
     hidden static [void]InitW32DLL() {
@@ -60,13 +60,13 @@ class Progenitor {
         $api = [Win32Builder]::New()
 
         # Map
-        $api::MapApi("kernel32.dll", "GetModuleHandle", ([intptr]), @([string]))
-        $api::MapApi("kernel32.dll", "GetProcAddress", ([intptr]), @([intptr], [string]))
-        $api::MapApi("psapi.dll", "EnumProcessModules", ([bool]), @([intptr], [intptr[]], [uint32], [uint32]))
-        $api::MapApi("psapi.dll", "GetModuleFileNameExA", ([uint32]), @([intptr], [intptr], [System.Text.StringBuilder], [uint32]))
+        $api.MapApi("kernel32.dll", "GetModuleHandle", ([intptr]), @([string]))
+        $api.MapApi("kernel32.dll", "GetProcAddress", ([intptr]), @([intptr], [string]))
+        $api.MapApi("psapi.dll", "EnumProcessModules", ([bool]), @([intptr], [intptr[]], [uint32], [uint32]))
+        $api.MapApi("psapi.dll", "GetModuleFileNameExA", ([uint32]), @([intptr], [intptr], [System.Text.StringBuilder], [uint32]))
 
         # Init
-        $cls::W32DLL = $api::CreateApi()
+        $cls::W32DLL = $api.CreateApi()
     }
 
     hidden static [void]InitW32PE() {
@@ -80,7 +80,7 @@ class Progenitor {
         # Map
 
         # Init
-        #$cls::W32PE = $api::CreateApi()
+        #$cls::W32PE = $api.CreateApi()
     }
 
     # Methods | Injection
