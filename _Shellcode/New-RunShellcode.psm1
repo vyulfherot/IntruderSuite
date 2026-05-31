@@ -28,7 +28,7 @@ function New-RunShellcode {
 
     $showCon = if ($hide) { 0x00 } else { 0x05 }
 
-    conwrite -do $isVerbose -name $dbgName -msg "Created CreateProcessA setup header:" -data "$(Pretty-Bytes($header))"
+    Write-Console -do $isVerbose -name $dbgName -msg "Created CreateProcessA setup header:" -data "$(ConvertTo-PrettyBytes($header))"
 
     # Footer | Re-aligned structure handling
     $footer = [byte[]]@(
@@ -44,7 +44,7 @@ function New-RunShellcode {
         0x48, 0x83, 0xC4, 0x50
     )
 
-    conwrite -do $isVerbose -msg "Created footer with call instructions:" -data "$(Pretty-Bytes($footer))"
+    Write-Console -do $isVerbose -msg "Created footer with call instructions:" -data "$(ConvertTo-PrettyBytes($footer))"
 
     # Chunking
     $nullTerminated = $call + "`0"
@@ -61,7 +61,7 @@ function New-RunShellcode {
     }
     $stringBytes += 0x49, 0x89, 0xE6
 
-    conwrite -do $isVerbose -msg "Calculated chunks"
+    Write-Console -do $isVerbose -msg "Calculated chunks"
 
     # Polish | Compensation and cleanup
     $extraBytes = ($chunks.Count - 1) * 8
@@ -74,17 +74,17 @@ function New-RunShellcode {
 
     $shellcode = $header + $stringBytes + $compensation + $footer + $finalCleanup
 
-    conwrite -do $isVerbose -msg "Calculated extra bytes and cleaning up"
+    Write-Console -do $isVerbose -msg "Calculated extra bytes and cleaning up"
 
     # Setup | Return
     $finalshc = [byte[]]$shellcode
 
-    conwrite -do $isVerbose -msg "Finalized shellcode:" -data "$(Pretty-Bytes($finalshc))"
-    conwrite -do (-not $silent) -name "/$dbgName" -msg "Custom CreateProcessA shellcode assembled to invoke `"$call`""
+    Write-Console -do $isVerbose -msg "Finalized shellcode:" -data "$(ConvertTo-PrettyBytes($finalshc))"
+    Write-Console -do (-not $silent) -name "/$dbgName" -msg "Custom CreateProcessA shellcode assembled to invoke `"$call`""
 
     # Return & Clipboard
     if ($toClipboard) {
-        "$(Pretty-Bytes -bytes ($shc))" | Set-Clipboard
+        "$(ConvertTo-PrettyBytes -bytes ($shc))" | Set-Clipboard
     }
 
     return $finalshc

@@ -1,4 +1,4 @@
-function Pretty-Bytes {
+function ConvertTo-PrettyBytes {
     [CmdletBinding()] 
     param(
         [byte[]]$bytes

@@ -1,4 +1,4 @@
-function Conwrite {
+function Write-Console {
     [CmdletBinding()] 
     param(
         [bool]$do = $true,

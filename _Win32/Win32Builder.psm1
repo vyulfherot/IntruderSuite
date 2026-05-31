@@ -59,7 +59,7 @@ class Win32Builder {
         try {
             $this.Api = $this.Builder.CreateType()
         } catch {
-            Conwrite -name $this.Conname -msg "Error initializing type:" -data "$($_)" -msgColor Red
+            Write-Console -name $this.Conname -msg "Error initializing type:" -data "$($_)" -msgColor Red
         }
 
         return $this.Api
