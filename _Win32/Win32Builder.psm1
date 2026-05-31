@@ -56,3 +56,14 @@ class Win32Builder {
         return $this.Builder.FullName
     }
 }
+
+function New-Win32Builder {
+    return [Win32Builder]::new()
+}
+
+# [Export]
+# Aliases
+New-Alias -Name newW32 -Value New-Win32Builder
+
+# Functions
+Export-ModuleMember -Function New-Win32Builder -Alias *
