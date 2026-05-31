@@ -26,27 +26,27 @@ class Win32Builder {
         $attr = [System.Reflection.MethodAttributes]"Public, Static, PinvokeImpl"
         $netConv = [System.Reflection.CallingConventions]::Standard
         $win32Conv = [System.Runtime.InteropServices.CallingConvention]::Winapi
-        $mb = $this.Builder.DefinePInvokeMethod($name, $dll, $attr, $netConv, $retType, $params, $win32Conv, $charSet)
-
-        $mb.SetImplementationFlags(
-            $mb.GetMethodImplementationFlags() -bor
-            [System.Reflection.MethodImplAttributes]::PreserveSig
+        $mb = $this.Builder.DefinePInvokeMethod(
+            $name,
+            $dll,
+            $attr,
+            $netConv,
+            $retType,
+            $params,
+            $win32Conv,
+            $charSet
         )
+
+        $implFlags = $mb.GetMethodImplementationFlags() -bor [System.Reflection.MethodImplAttributes]::PreserveSig
+        $mb.SetImplementationFlags($implFlags)
 
         $dllImportCtor = [System.Runtime.InteropServices.DllImportAttribute].GetConstructor(@([string]))
-        $dllImportFields = @(
-            [System.Runtime.InteropServices.DllImportAttribute].GetField('SetLastError'),
-            [System.Runtime.InteropServices.DllImportAttribute].GetField('CharSet')
-        )
-        $fieldvalues = @(
-            [bool]$true,
-            [System.Runtime.InteropServices.CharSet]$charSet
-        )
+        $dllImportField = @([System.Runtime.InteropServices.DllImportAttribute].GetField('SetLastError'))
         $cab = New-Object System.Reflection.Emit.CustomAttributeBuilder(
             $dllImportCtor,
             @($dll),
-            $dllImportFields,
-            $fieldvalues
+            @($dllImportField),
+            @($true)
         )
         $mb.SetCustomAttribute($cab)
     }
