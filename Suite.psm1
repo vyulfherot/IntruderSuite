@@ -1,4 +1,4 @@
-Get-ChildItem -Path $PSScriptRoot -Recurse -Filter "*.ps*" | ? { $_.FullName -ne $PSCommandPath } | % { Import-Module $_.FullName -DisableNameChecking }
+Get-ChildItem -Path $PSScriptRoot -Recurse -Filter "*.ps*" | Where-Object { $_.FullName -ne $PSCommandPath } | ForEach-Object { Import-Module $_.FullName -DisableNameChecking }
 
 # Aliases
 'nrs', 'nrshc', 'genshc' | ForEach-Object { Set-Alias -Name $_ -Value 'New-RunShellcode' }
