@@ -28,4 +28,9 @@ function Write-Console {
     }
 }
 
+# [Export]
+# Aliases
+'cw', 'con', 'conwrite' | ForEach-Object { Set-Alias -Name $_ -Value 'Write-Console' }
+
+# Functions
 Export-ModuleMember -Function *
