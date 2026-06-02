@@ -90,9 +90,4 @@ function New-RunShellcode {
     return $finalshc
 }
 
-# [Export]
-# Aliases
-'nrs', 'nrshc', 'genshc' | ForEach-Object { Set-Alias -Name $_ -Value 'New-RunShellcode' }
-
-# Functions
 Export-ModuleMember -Function *
