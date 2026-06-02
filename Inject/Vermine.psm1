@@ -7,7 +7,7 @@ class Vermine {
         $verbose = $verbose -and !$silent
 
         # Setup | Shellcode
-        if ($null -ne $shellcodeBinPath) {
+        if (![string]::IsNullOrWhiteSpace($shellcodeBinPath)) {
             $shellcode = [System.IO.File]::ReadAllBytes($shellcodeBinPath)
         } elseif ($null -eq $shellcode) {
             Write-Console -do !$silent -name $dbgName -msg "Shellcode bytes nor bin path set!" -msgColor Red
