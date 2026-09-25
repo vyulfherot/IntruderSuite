@@ -3,6 +3,7 @@
 Uses simple Win32 api methods and bytecode manipulation.
 All modules and classes can be loaded into powershell by invoking:
 - `Import-Module ".\Suite.psm1" -Force`
+- `using module "<module path e.g. '.\Inject\Progenitor'>"`
 
 ### Dislaimer:
 This was a simple, experimental and educational attempt at codecave and process injection to learn more about the Win32 api, PE files, Assembly and PIC shellcode.
