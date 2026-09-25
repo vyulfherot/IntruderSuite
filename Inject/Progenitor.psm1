@@ -25,7 +25,11 @@ class Progenitor {
         if ($null -ne $cls::K32Proc) {return}
 
         # Assign
+<<<<<<< HEAD
         $api = [Win32Builder]::New()
+=======
+        $api = New-Win32Builder
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
 
         # Map
         $api.MapApi("kernel32.dll", "OpenProcess", ([intptr]), @([uint32], [bool], [uint32]))
@@ -40,7 +44,11 @@ class Progenitor {
         if ($null -ne $cls::K32Mem) {return}
 
         # Assign
+<<<<<<< HEAD
         $api = [Win32Builder]::New()
+=======
+        $api = New-Win32Builder
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
 
         # Map
         $api.MapApi("kernel32.dll", "VirtualAllocEx", ([intptr]), @([intptr], [intptr], [uintptr], [uint32], [uint32]))
@@ -57,7 +65,11 @@ class Progenitor {
         if ($null -ne $cls::W32DLL) {return}
 
         # Assign
+<<<<<<< HEAD
         $api = [Win32Builder]::New()
+=======
+        $api = New-Win32Builder
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
 
         # Map
         $api.MapApi("kernel32.dll", "GetModuleHandle", ([intptr]), @([string]))
@@ -98,11 +110,22 @@ class Progenitor {
         $cls::targetHandle = $w32::OpenProcess($dwAccess, $false, $tPID)
     }
 
+<<<<<<< HEAD
     static [bool]InjectShc([byte[]]$shellcode) {
+=======
+    static [bool]InjectShc([byte[]]$shellcode, [uint32]$tPID) {
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
         # Setup | Class & Debug
         $cls = [Progenitor]
         $conname = "InjectSHC"
 
+<<<<<<< HEAD
+=======
+        if ($null -ne $tPID) {
+            $cls::TargetProcess($tPID)
+        }
+
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
         # Setup | Win32
         $cls::InitK32Mem()
 
@@ -137,11 +160,22 @@ class Progenitor {
         return $true
     }
 
+<<<<<<< HEAD
     static [void]InjectDLL([string]$dllPath) {
+=======
+    static [void]InjectDLL([string]$dllPath, [uint32]$tPID) {
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
         # Setup | Class & Debug
         $cls = [Progenitor]
         $conname = "InjectDLL"
 
+<<<<<<< HEAD
+=======
+        if ($null -ne $tPID) {
+            $cls::TargetProcess($tPID)
+        }
+
+>>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
         # Setup | Win32
         $cls::InitK32DLL()
 
