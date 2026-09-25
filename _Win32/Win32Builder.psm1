@@ -75,11 +75,7 @@ class Win32Builder {
 }
 
 function New-Win32Builder {
-<<<<<<< HEAD
-    return [Win32Builder]::new()
-=======
     return [Win32Builder]::new([System.Reflection.Emit.AssemblyBuilderAccess]::RunAndCollect)
->>>>>>> 894df41 (Fixed progenitor not using right init for Win32Builder. Added target PID specification support for each Inject method in Progenitor.)
 }
 
 Export-ModuleMember -Function New-Win32Builder -Alias *
